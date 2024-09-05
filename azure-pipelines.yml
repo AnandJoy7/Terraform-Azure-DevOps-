@@ -1,0 +1,32 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    curl -LO https://releases.hashicorp.com/terraform/1.5.3/terraform_1.5.3_linux_amd64.zip
+    unzip terraform_1.5.3_linux_amd64.zip
+    sudo mv terraform /usr/local/bin/
+  displayName: 'Install Terraform'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'AppConnection7' # Replace with your Azure service connection name
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      terraform init
+      terraform plan -out=tfplan
+      terraform apply -auto-approve tfplan
+  displayName: 'Terraform Init, Plan, and Apply'
+
+- task: Email@1
+  condition: failed()
+  inputs:
+    to: 'k.anad548@gmail.com' # Replace with your email address
+    subject: 'Azure DevOps Pipeline Failed'
+    body: 'The pipeline failed. Check the logs for more details.'
