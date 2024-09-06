@@ -21,7 +21,8 @@ steps:
     inputs:
       awsCredentials: 'AwsConnect7'  # Your AWS service connection name
       awsRegion: 'us-east-1'            # Replace with your preferred AWS region
-      awsCommand: 'configure'  # Required input parameter
+      awsCommand: 'aws'  # Required input parameter
+      awsSubCommand: 'configure'
       arguments: '--profile default' # To set the profile for the AWS CLI
     displayName: 'Authenticate with AWS'
 
