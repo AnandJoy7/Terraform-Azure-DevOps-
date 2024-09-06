@@ -2,10 +2,10 @@ trigger:
   branches:
     include:
       - main
- 
+
 pool:
   vmImage: 'ubuntu-latest'
- 
+
 steps:
   # Checkout the Azure DevOps repository
   - checkout: self
@@ -21,8 +21,8 @@ steps:
     inputs:
       awsCredentials: 'AwsConnect7'  # Your AWS service connection name
       awsRegion: 'us-east-1'            # Replace with your preferred AWS region
-      command: 's3'
-      arguments: 'ls'
+      awsCommand: 'configure'  # Required input parameter
+      arguments: '--profile default' # To set the profile for the AWS CLI
     displayName: 'Authenticate with AWS'
 
   # Clone the GitHub repository
@@ -32,7 +32,7 @@ steps:
 
   # Run Terraform commands
   - script: |
-      cd Terraform-Azure-DevOps-
+      cd Terraform-Azure-DevOps-/terraform-infra-deployment/terraform-s3
 
       terraform init
       terraform plan
