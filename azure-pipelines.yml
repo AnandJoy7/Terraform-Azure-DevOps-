@@ -16,15 +16,16 @@ steps:
     inputs:
       terraformVersion: '1.5.0'
 
-  # Authenticate with AWS using the service connection
-  - task: AWSCLI@1
+  # Set up AWS credentials from the service connection
+  - task: Bash@3
     inputs:
-      awsCredentials: 'AwsConnect7'  # Your AWS service connection name
-      awsRegion: 'us-east-1'            # Replace with your preferred AWS region
-      awsCommand: 'aws'  # Required input parameter
-      awsSubCommand: 'configure'
-      arguments: '--profile default' # To set the profile for the AWS CLI
-    displayName: 'Authenticate with AWS'
+      targetType: 'inline'
+      script: |
+        echo "Setting up AWS credentials"
+        export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id --profile AwsConnect7)
+        export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key --profile AwsConnect7)
+        export AWS_DEFAULT_REGION='us-east-1' # Replace with your AWS region
+    displayName: 'Set up AWS credentials'
 
   # Clone the GitHub repository
   - script: |
