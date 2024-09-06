@@ -16,16 +16,14 @@ steps:
     inputs:
       terraformVersion: '1.5.0'
 
-  # Set up AWS credentials from the service connection
-  - task: Bash@3
+  # Use AWS CLI Task to set up credentials
+  - task: AWSCLI@1
     inputs:
-      targetType: 'inline'
-      script: |
-        echo "Setting up AWS credentials"
-        export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id --profile AwsConnect7)
-        export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key --profile AwsConnect7)
-        export AWS_DEFAULT_REGION='us-east-1' # Replace with your AWS region
-    displayName: 'Set up AWS credentials'
+      awsCredentials: 'AwsConnect7'   # Replace with your AWS service connection name
+      regionName: 'us-east-1'         # Replace with your AWS region
+      awsCommand: 's3'
+      arguments: 'ls'
+    displayName: 'Authenticate with AWS'
 
   # Clone the GitHub repository
   - script: |
@@ -34,8 +32,14 @@ steps:
 
   # Run Terraform commands
   - script: |
-      cd Terraform-Azure-DevOps-
+      cd Terraform-Azure-DevOps-/terraform-infra-deployment/terraform-s3
 
+      # Export AWS credentials
+      export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+      export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+      export AWS_DEFAULT_REGION='us-east-1' # Replace with your AWS region
+
+      # Run Terraform commands
       terraform init
       terraform plan
       terraform apply -auto-approve
