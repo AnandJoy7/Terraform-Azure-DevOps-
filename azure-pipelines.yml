@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+      - main
+ 
+pool:
+  vmImage: 'ubuntu-latest'
+ 
+steps:
+  # Checkout the Azure DevOps repository
+  - checkout: self
+    persistCredentials: true
+
+  # Install Terraform
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: '1.5.0'
+
+  # Authenticate with AWS using the service connection
+  - task: AWSCLI@1
+    inputs:
+      awsCredentials: 'AwsConnection7'  # Your AWS service connection name
+      awsRegion: 'us-east-1'            # Replace with your preferred AWS region
+      command: 's3'
+      arguments: 'ls'
+    displayName: 'Authenticate with AWS'
+
+  # Clone the GitHub repository
+  - script: |
+      git clone https://github.com/AnandJoy7/Terraform-Azure-DevOps-.git
+    displayName: 'Clone GitHub Repository'
+
+  # Run Terraform commands
+  - script: |
+      cd Terraform-Azure-DevOps-
+
+      terraform init
+      terraform plan
+      terraform apply -auto-approve
+    displayName: 'Terraform Init, Plan, and Apply'
