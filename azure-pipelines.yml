@@ -19,7 +19,7 @@ steps:
   # Authenticate with AWS using the service connection
   - task: AWSCLI@1
     inputs:
-      awsCredentials: 'AwsConnection7'  # Your AWS service connection name
+      awsCredentials: 'AwsConnect7'  # Your AWS service connection name
       awsRegion: 'us-east-1'            # Replace with your preferred AWS region
       command: 's3'
       arguments: 'ls'
