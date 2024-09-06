@@ -34,7 +34,7 @@ steps:
 
   # Run Terraform commands
   - script: |
-      cd Terraform-Azure-DevOps-/terraform-infra-deployment/terraform-s3
+      cd Terraform-Azure-DevOps-
 
       terraform init
       terraform plan
