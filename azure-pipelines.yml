@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+      - main
+ 
+pool:
+  vmImage: 'ubuntu-latest'
+ 
+steps:
+  # Clone the GitHub repository and initialize Terraform, plan, and apply in one script
+  - checkout: self
+    persistCredentials: true
+ 
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: '1.5.0'
+ 
+  - script: |
+      git clone https://github.com/AnandJoy7/Terraform-Azure-DevOps-.git
+      cd terraform-infra-deployment/terraform-s3
+      terraform init
+      terraform plan
+      terraform apply -auto-approve
+    displayName: 'Clone Git Repo, Terraform Init, Plan, and Apply'
